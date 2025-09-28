@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@6.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.1.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@7.0.2"></script>
+</head>
+<body>
+  <div id="vis"/>
+  <script>
+    const spec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Distribution of Mechanical Engineers in Australia (Share by State, 2021)",
+  "width": 700,
+  "height": 450,
+  "projection": {"type": "mercator", "center": [134, -25], "scale": 750},
+  "layer": [
+    {"data": {"sphere": true}, "mark": {"type": "geoshape", "fill": "#e0f7fa"}},
+    {
+      "data": {"graticule": true},
+      "mark": {"type": "geoshape", "stroke": "lightgray", "strokeWidth": 0.5}
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/rowanhogan/australian-states/master/states.geojson",
+        "format": {"type": "json", "property": "features"}
+      },
+      "transform": [
+        {
+          "lookup": "properties.STATE_NAME",
+          "from": {
+            "data": {
+              "values": [
+                {"state": "New South Wales", "percentage": 25.7},
+                {"state": "Victoria", "percentage": 28.3},
+                {"state": "Queensland", "percentage": 18.4},
+                {"state": "South Australia", "percentage": 6.3},
+                {"state": "Western Australia", "percentage": 18.9},
+                {"state": "Tasmania", "percentage": 1},
+                {"state": "Northern Territory", "percentage": 0.4},
+                {"state": "Australian Capital Territory", "percentage": 1}
+              ]
+            },
+            "key": "state",
+            "fields": ["percentage"]
+          }
+        }
+      ],
+      "mark": {"type": "geoshape", "stroke": "#ffffff", "strokeWidth": 0.5},
+      "encoding": {
+        "color": {
+          "field": "percentage",
+          "type": "quantitative",
+          "scale": {"scheme": "greens", "domain": [0, 30]},
+          "legend": {"title": "Mechanical engineers (%)", "format": ".1f"}
+        },
+        "tooltip": [
+          {
+            "field": "properties.STATE_NAME",
+            "type": "nominal",
+            "title": "State"
+          },
+          {"field": "percentage", "type": "quantitative", "title": "Share (%)"}
+        ]
+      }
+    }
+  ],
+  "config": {}
+};
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
